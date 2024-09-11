@@ -1,6 +1,8 @@
 package com.example.library_management_system.service.impl;
 
 import com.example.library_management_system.dto.request.transaction.CreateBorrowReturnRequest;
+import com.example.library_management_system.dto.response.transaction.GetBorrowTransactionResponse;
+import com.example.library_management_system.dto.response.transaction.GetReturnTransactionResponse;
 import com.example.library_management_system.entity.BookEntity;
 import com.example.library_management_system.entity.PatronEntity;
 import com.example.library_management_system.entity.TransactionEntity;
@@ -63,7 +65,7 @@ public class TransactionServiceImpl implements TransactionService {
                     book.setAvailableCopies(book.getAvailableCopies() + 1);
                     bookRepository.save(book);
                     transactionRepository.save(t);
-                    ApiResponse<Object> response = new ApiResponse<>(null, "Book returned successfully");
+                    ApiResponse<Object> response = new ApiResponse<>(GetReturnTransactionResponse.builder().fine(t.getFine()).build(), "Book returned successfully");
                     return new ResponseEntity<>(response, HttpStatus.OK);
                 }
             }
@@ -116,7 +118,7 @@ public class TransactionServiceImpl implements TransactionService {
         transactionRepository.save(transaction);
         bookRepository.save(book);
 
-        ApiResponse<Object> response = new ApiResponse<>(transaction.getDueDate(), "Book borrowed successfully.");
+        ApiResponse<Object> response = new ApiResponse<>(GetBorrowTransactionResponse.builder().dueDate(transaction.getDueDate()).build(), "Book borrowed successfully.");
         return new ResponseEntity<>(response, HttpStatus.OK);
 
     }

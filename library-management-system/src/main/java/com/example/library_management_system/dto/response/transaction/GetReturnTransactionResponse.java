@@ -11,6 +11,6 @@ import java.sql.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetReturnTransactionResponse {
-    @JsonProperty("due_date")
+    @JsonProperty("fine")
     public Double fine;
 }
