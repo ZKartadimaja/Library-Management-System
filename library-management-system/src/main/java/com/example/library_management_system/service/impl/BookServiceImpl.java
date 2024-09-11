@@ -25,6 +25,8 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
 
 @Service
 @Slf4j
@@ -39,7 +41,9 @@ public class BookServiceImpl implements BookService {
     // Add a New Book
     @Override
     public ResponseEntity<ApiResponse<Object>> saveBook(CreateBookRequest bookDetails) {
-        if (bookDetails.getTitle() == null || bookDetails.getAuthor() == null || bookDetails.getIsbn() == null || bookDetails.getQuantity() <= 0) {
+        boolean isbnExists = bookRepository.existsByIsbn(bookDetails.getIsbn());
+
+        if (bookDetails.getTitle() == null || bookDetails.getAuthor() == null || bookDetails.getIsbn() == null || bookDetails.getQuantity() <= 0 || isbnExists) {
             ApiResponse<Object> response = new ApiResponse<>(null, "Invalid input. Ensure all fields are filled and ISBN is unique.");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
@@ -64,7 +68,7 @@ public class BookServiceImpl implements BookService {
     public ResponseEntity<ApiResponse<Object>> updateBook(Long bookId, UpdateBookRequest bookDetails) {
         BookEntity book = bookRepository.findById(bookId)
                 .orElse(null);
-        if (bookDetails.getTitle() == null || bookDetails.getAuthor() == null || bookDetails.getQuantity() <= 0) {
+        if (book == null || bookDetails.getTitle() == null || bookDetails.getAuthor() == null || bookDetails.getQuantity() <= 0) {
             ApiResponse<Object> response = new ApiResponse<>(null, "Invalid input. Ensure all fields are filled.");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
