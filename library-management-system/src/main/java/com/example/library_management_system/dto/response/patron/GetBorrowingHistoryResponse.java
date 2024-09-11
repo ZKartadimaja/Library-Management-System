@@ -1,7 +1,6 @@
 package com.example.library_management_system.dto.response.patron;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Column;
 import lombok.*;
 
 import java.sql.Date;

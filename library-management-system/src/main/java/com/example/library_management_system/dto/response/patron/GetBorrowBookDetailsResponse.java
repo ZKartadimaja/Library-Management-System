@@ -1,6 +1,5 @@
 package com.example.library_management_system.dto.response.patron;
 
-import com.example.library_management_system.entity.BookEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 

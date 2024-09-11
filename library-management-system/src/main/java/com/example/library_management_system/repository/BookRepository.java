@@ -1,7 +1,5 @@
 package com.example.library_management_system.repository;
 
-import com.example.library_management_system.dto.response.book.GetAllBookResponse;
-import com.example.library_management_system.dto.response.book.GetOverdueBooks;
 import com.example.library_management_system.entity.BookEntity;
 import com.example.library_management_system.entity.PatronEntity;
 import com.example.library_management_system.entity.TransactionEntity;

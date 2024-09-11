@@ -1,6 +1,5 @@
 package com.example.library_management_system.repository;
 
-import com.example.library_management_system.entity.BookEntity;
 import com.example.library_management_system.entity.TransactionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
