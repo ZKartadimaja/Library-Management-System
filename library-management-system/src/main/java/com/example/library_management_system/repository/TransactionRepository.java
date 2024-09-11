@@ -23,16 +23,9 @@ public interface TransactionRepository extends JpaRepository<TransactionEntity, 
     @Query(
             value = "select t.* " +
                     "from transactions t " +
-                    "where t.patron_id = :patron_id and t.book_id = :book_id"
+                    "where t.patron_id = :patron_id and t.book_id = :book_id and t.returned_date is null"
             , nativeQuery = true
     )
-    TransactionEntity findTransactionByPatronIdAndBookId(@Param("patron_id") Long patronId, @Param("book_id") Long bookId);
+    List<TransactionEntity> findTransactionByPatronIdAndBookId(@Param("patron_id") Long patronId, @Param("book_id") Long bookId);
 
-    @Query(
-            value = "select b " +
-                    "from books b " +
-                    "where b.id = :book_id",
-            nativeQuery = true
-    )
-    BookEntity getBookById(@Param("book_id") Long bookId);
 }

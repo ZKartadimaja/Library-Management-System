@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -37,49 +38,40 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public ResponseEntity<ApiResponse<Object>> returnBook(CreateBorrowReturnRequest returnDetails) {
-        TransactionEntity transaction = transactionRepository.findTransactionByPatronIdAndBookId(returnDetails.getPatronId(), returnDetails.getBookId());
+        List<TransactionEntity> transaction = transactionRepository.findTransactionByPatronIdAndBookId(returnDetails.getPatronId(), returnDetails.getBookId());
 
-        if (transaction != null) {
-            LocalDateTime now = LocalDateTime.now();
-            Date dueDate = transaction.getDueDate();
+        if (!transaction.isEmpty()) {
+            for (TransactionEntity t : transaction){
+                LocalDateTime now = LocalDateTime.now();
 
-            LocalDate localDate = dueDate.toLocalDate();
-            LocalDateTime localDateTime = localDate.atStartOfDay();
-//            // Convert Date to Instant
-//            Instant instant = dueDate.toInstant();
-//
-//            // Convert Instant to LocalDateTime
-//            LocalDateTime localDateTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
+                Date dueDate = t.getDueDate();
+                LocalDate localDate = dueDate.toLocalDate();
+                LocalDateTime localDateTime = localDate.atStartOfDay();
+                double fine = 0.0;
 
-            double fine = 0.0;
+                if (now.isAfter(localDateTime)) {
+                    long overdueDays = ChronoUnit.DAYS.between(localDateTime, now);
+                    fine = overdueDays * 0.50; // Example fine rate
+                }
 
-            if (now.isAfter(localDateTime)) {
-                long overdueDays = ChronoUnit.DAYS.between(localDateTime, now);
-                fine = overdueDays * 0.50; // Example fine rate
+                LocalDate returnDate = now.toLocalDate();
+                java.sql.Date sqlDate = java.sql.Date.valueOf(returnDate);
+
+                t.setReturnedDate(sqlDate);
+                t.setFine(fine);
+
+                BookEntity book = bookRepository.findById(returnDetails.getBookId()).orElse(null);
+                if (book != null){
+                    book.setAvailableCopies(book.getAvailableCopies() + 1);
+                    bookRepository.save(book);
+                    transactionRepository.save(t);
+                    ApiResponse<Object> response = new ApiResponse<>(null, "Book returned successfully");
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
             }
-
-            LocalDateTime localDateTime2 = LocalDateTime.now();
-
-            // Extract the LocalDate part
-            LocalDate localDate2 = localDateTime.toLocalDate();
-
-            // Convert LocalDate to java.sql.Date
-            java.sql.Date sqlDate = java.sql.Date.valueOf(localDate2);
-
-            transaction.setReturnedDate(sqlDate);
-            transaction.setFine(fine);
-
-            BookEntity book = transactionRepository.getBookById(returnDetails.getBookId());
-            book.setAvailableCopies(book.getAvailableCopies() + 1);
-            bookRepository.save(book);
-            transactionRepository.save(transaction);
-
-        } else {
-            ApiResponse<Object> response = new ApiResponse<>(null, "No books to return");
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
-
-        return null;
+        ApiResponse<Object> response = new ApiResponse<>(null, "No books to return");
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @Override
@@ -101,7 +93,7 @@ public class TransactionServiceImpl implements TransactionService {
         Optional<BookEntity> bookOpt = bookRepository.findById(bookId);
 
         PatronEntity patron = patronOpt.get();
-        BookEntity book = bookOpt.get();
+        BookEntity book = bookRepository.findById(bookId).orElse(null);
 
         //Check patron borrowing limit based on membership type and available copies of the book
         int borrowingLimit = patron.getMembershipType().equals("Premium") ? 10 : 5;
