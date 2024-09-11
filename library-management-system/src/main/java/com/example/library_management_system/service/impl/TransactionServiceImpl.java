@@ -41,6 +41,7 @@ public class TransactionServiceImpl implements TransactionService {
     public ResponseEntity<ApiResponse<Object>> returnBook(CreateBorrowReturnRequest returnDetails) {
         List<TransactionEntity> transaction = transactionRepository.findTransactionByPatronIdAndBookId(returnDetails.getPatronId(), returnDetails.getBookId());
 
+        // Check Transaction History
         if (!transaction.isEmpty()) {
             for (TransactionEntity t : transaction){
                 LocalDateTime now = LocalDateTime.now();
