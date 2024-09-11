@@ -1,7 +1,5 @@
 package com.example.library_management_system.controller;
 
-
-import com.example.library_management_system.entity.BookEntity;
 import com.example.library_management_system.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,20 +16,20 @@ public class BookController {
 
     // Add a New Book
     @PostMapping
-    public ResponseEntity<ApiResponse> createBook(@RequestBody BookRequest book) {
+    public ResponseEntity<ApiResponse> createBook(@RequestBody CreateBookRequest book) {
         return bookService.saveBook(book);
     }
 
     // Update Book Details
     @PutMapping("/{book_id}")
-    public ResponseEntity<ApiResponse> updateBook(@PathVariable(name = "book_id") Long bookId, @RequestBody BookRequest bookDetails) {
+    public ResponseEntity<ApiResponse> updateBook(@PathVariable(name = "book_id") Long bookId, @RequestBody UpdateBookRequest bookDetails) {
         return bookService.updateBook(bookDetails);
     }
 
     // List All Available Books
     @GetMapping()
-    public Page<ApiResponse> getAllBooks(Pageable pageable) {
-        return bookService.getAllBooks(pageable);
+    public Page<ApiResponse> getAllAvailableBooks(Pageable pageable) {
+        return bookService.getAllAvailableBooks(pageable);
     }
 
     // Search Books by Title or Author
