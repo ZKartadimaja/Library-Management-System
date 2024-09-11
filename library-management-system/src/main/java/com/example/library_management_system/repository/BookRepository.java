@@ -15,6 +15,7 @@ public interface BookRepository extends JpaRepository<BookEntity, Long> {
     //Get All Books
     Page<BookEntity> findAll(Pageable pageable);
 
+    //Search Book by Author or Title
     @Query(
             value = "select * " +
                     "from books b " +
