@@ -8,10 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateBookResponse {
-
-    @JsonProperty("id")
-    private Long id;
+public class GetAvailableBookCopies {
 
     @JsonProperty("title")
     private String title;

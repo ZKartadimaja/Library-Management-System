@@ -1,15 +1,13 @@
 package com.example.library_management_system.dto.response.book;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class GetAllBookResponse {
     @JsonProperty("id")
     private Long id;
