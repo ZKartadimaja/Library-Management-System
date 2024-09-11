@@ -1,10 +1,7 @@
 package com.example.library_management_system.dto.response.book;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 
@@ -12,7 +9,8 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetOverdueBook {
+@Builder
+public class GetOverdueBooks {
     @JsonProperty("book_title")
     private String bookTitle;
 
