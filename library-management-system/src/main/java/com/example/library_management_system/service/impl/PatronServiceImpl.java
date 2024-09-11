@@ -6,6 +6,7 @@ import com.example.library_management_system.entity.BookEntity;
 import com.example.library_management_system.entity.PatronEntity;
 import com.example.library_management_system.entity.TransactionEntity;
 import com.example.library_management_system.repository.PatronRepository;
+import com.example.library_management_system.repository.TransactionRepository;
 import com.example.library_management_system.service.PatronService;
 import com.example.library_management_system.util.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,8 @@ public class PatronServiceImpl implements PatronService {
 
     @Autowired
     private PatronRepository patronRepository;
+    @Autowired
+    private TransactionRepository transactionRepository;
 
     public ResponseEntity<ApiResponse<Object>> savePatron(CreatePatronRequest patron){
         if(patron.getName() == null || patron.getEmail() == null || patron.getMembershipType() == null){
@@ -85,7 +88,7 @@ public class PatronServiceImpl implements PatronService {
         Optional<PatronEntity> result = patronRepository.findById(patronId);
         if (result.isPresent()) {
             List<BookEntity> books = patronRepository.findBookByPatronId(patronId);
-            List<TransactionEntity> transactions = patronRepository.findTransactionByPatronId(patronId);
+            List<TransactionEntity> transactions = transactionRepository.findTransactionByPatronId(patronId);
             List<GetBorrowingHistoryResponse> allBook = new ArrayList<>();
             for(int i=0; i<books.size();i++){
                 if(transactions.get(i).getReturnedDate() == null){
@@ -104,7 +107,7 @@ public class PatronServiceImpl implements PatronService {
         PatronEntity result = patronRepository.findById(patronId).orElse(null);
         if (result != null) {
             List<BookEntity> books = patronRepository.findBookByPatronId(patronId);
-            List<TransactionEntity> transactions = patronRepository.findTransactionByPatronId(patronId);
+            List<TransactionEntity> transactions = transactionRepository.findTransactionByPatronId(patronId);
             List<GetBorrowBookDetailsResponse> allBook = new ArrayList<>();
             for(int i=0; i<books.size();i++){
                 if(transactions.get(i).getReturnedDate() != null){
@@ -122,7 +125,7 @@ public class PatronServiceImpl implements PatronService {
     public ResponseEntity<ApiResponse<Object>> deletePatron(Long patronId) {
         PatronEntity patron = patronRepository.findById(patronId).orElse(null);
         if(patron != null) {
-            List<TransactionEntity> transactions = patronRepository.findTransactionByPatronId(patronId);
+            List<TransactionEntity> transactions = transactionRepository.findTransactionByPatronId(patronId);
             if (transactions == null){
                 patronRepository.delete(patron);
                 ApiResponse<Object> response = new ApiResponse<>(null, "Patron deleted successfully.");
@@ -147,7 +150,7 @@ public class PatronServiceImpl implements PatronService {
         PatronEntity result = patronRepository.findById(patronId).orElse(null);
         if (result != null) {
             List<BookEntity> books = patronRepository.findBookByPatronId(patronId);
-            List<TransactionEntity> transactions = patronRepository.findTransactionByPatronId(patronId);
+            List<TransactionEntity> transactions = transactionRepository.findTransactionByPatronId(patronId);
             List<GetCurrentBorrowedResponse> allBook = new ArrayList<>();
             for(int i=0; i<books.size();i++){
                 if(transactions.get(i).getReturnedDate() == null){

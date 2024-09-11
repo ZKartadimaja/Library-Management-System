@@ -24,13 +24,4 @@ public interface PatronRepository extends JpaRepository<PatronEntity, Long>{
     )
     List<BookEntity> findBookByPatronId(@Param("id") Long id);
 
-    @Query(
-            value = "select t.* " +
-                    "from patrons p " +
-                    "join transactions t on t.patron_id = p.id " +
-                    "join books b on t.book_id = b.id " +
-                    "where p.id = :id",
-            nativeQuery = true
-    )
-    List<TransactionEntity> findTransactionByPatronId(@Param("id") Long id);
 }
