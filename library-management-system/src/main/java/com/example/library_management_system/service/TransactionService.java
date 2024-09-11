@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public interface TransactionService {
+    // Borrow A Book
     ResponseEntity<ApiResponse<Object>> borrowBook(CreateBorrowReturnRequest borrowDetails);
 
+    // Return A Book
     ResponseEntity<ApiResponse<Object>> returnBook(CreateBorrowReturnRequest returnDetails);
 }

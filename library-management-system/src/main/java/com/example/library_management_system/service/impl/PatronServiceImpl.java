@@ -32,18 +32,23 @@ public class PatronServiceImpl implements PatronService {
     @Autowired
     private TransactionRepository transactionRepository;
 
+    // Save New Patron
     public ResponseEntity<ApiResponse<Object>> savePatron(CreatePatronRequest patron){
+        // Check Input If Null Will Get Bad Request
         if(patron.getName() == null || patron.getEmail() == null || patron.getMembershipType() == null){
             ApiResponse<Object> response = new ApiResponse<>(null, "Patron not found.");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
         Pattern pattern = Pattern.compile("^.+@.+\\..+$");
         Matcher matcher = pattern.matcher(patron.getEmail());
+
+        // Check Membership Type
         if(!matcher.matches() || (!patron.getMembershipType().equals("regular") && !patron.getMembershipType().equals("premium"))) {
             ApiResponse<Object> response = new ApiResponse<>(null, "Patron not found.");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
 
+        // Set New Patron
         PatronEntity patronEntity = new PatronEntity();
         patronEntity.setName(patron.getName());
         patronEntity.setEmail(patron.getEmail());
@@ -51,7 +56,7 @@ public class PatronServiceImpl implements PatronService {
         patronEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
         PatronEntity result = patronRepository.save(patronEntity);
 
-
+        // Build Response
         ApiResponse<Object> response = new ApiResponse<>(CreateResponsePatron.builder()
                 .id(result.getId())
                 .name(result.getName())
@@ -61,7 +66,10 @@ public class PatronServiceImpl implements PatronService {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    // Update Patron Details
     public ResponseEntity<ApiResponse<Object>> updatePatron(Long patronId, CreatePatronRequest patron){
+
+        // Check Input
         if(patron.getName() == null || patron.getEmail() == null){
             ApiResponse<Object> response = new ApiResponse<>(null, "Patron not found.");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -74,16 +82,19 @@ public class PatronServiceImpl implements PatronService {
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
 
+        // Update Patron
         checkPatron.setName(patron.getName());
         checkPatron.setEmail(patron.getEmail());
         checkPatron.setMembershipType(patron.getMembershipType());
         checkPatron.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
         PatronEntity result = patronRepository.save(checkPatron);
 
+        // Response
         ApiResponse<Object> response = new ApiResponse<>(null, "Patron details updated successfully.");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    // View Borrowing History
     public ResponseEntity<ApiResponse<Object>> getPatronHistoryById(Long patronId){
         Optional<PatronEntity> result = patronRepository.findById(patronId);
         if (result.isPresent()) {
@@ -103,6 +114,7 @@ public class PatronServiceImpl implements PatronService {
         }
     }
 
+    // Get Details of A Patron
     public ResponseEntity<ApiResponse<Object>> getPatronsById(Long patronId) {
         PatronEntity result = patronRepository.findById(patronId).orElse(null);
         if (result != null) {
@@ -122,6 +134,7 @@ public class PatronServiceImpl implements PatronService {
         }
     }
 
+    // Delete Patron
     public ResponseEntity<ApiResponse<Object>> deletePatron(Long patronId) {
         PatronEntity patron = patronRepository.findById(patronId).orElse(null);
         if(patron != null) {
@@ -147,6 +160,7 @@ public class PatronServiceImpl implements PatronService {
         }
     }
 
+    // Get Last Borrowed Book By Patron Id
     public ResponseEntity<ApiResponse<Object>> getPatronCurrentBorrowingsById(Long patronId){
         PatronEntity result = patronRepository.findById(patronId).orElse(null);
         if (result != null) {

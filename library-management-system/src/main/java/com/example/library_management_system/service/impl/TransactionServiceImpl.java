@@ -36,6 +36,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     private PatronRepository patronRepository;
 
+    // Return A Book
     @Override
     public ResponseEntity<ApiResponse<Object>> returnBook(CreateBorrowReturnRequest returnDetails) {
         List<TransactionEntity> transaction = transactionRepository.findTransactionByPatronIdAndBookId(returnDetails.getPatronId(), returnDetails.getBookId());
@@ -74,6 +75,7 @@ public class TransactionServiceImpl implements TransactionService {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    //Borrow A Book
     @Override
     public ResponseEntity<ApiResponse<Object>> borrowBook(CreateBorrowReturnRequest borrowDetails) {
 

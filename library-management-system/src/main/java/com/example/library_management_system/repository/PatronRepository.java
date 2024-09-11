@@ -12,6 +12,7 @@ import java.util.List;
 @Repository
 public interface PatronRepository extends JpaRepository<PatronEntity, Long>{
 
+    // Query To Get List of Book Who Borrowed By A Patron
     @Query(
             value = "select b.* " +
                     "from patrons p " +

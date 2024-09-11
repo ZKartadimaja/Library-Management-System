@@ -11,6 +11,7 @@ import java.util.List;
 @Repository
 public interface TransactionRepository extends JpaRepository<TransactionEntity, Long> {
 
+    // Query/Logic To Know How Many Patrons Borrow Book
     @Query(
             value = "select count(t) " +
                     "from transactions t " +
@@ -19,6 +20,7 @@ public interface TransactionRepository extends JpaRepository<TransactionEntity, 
     )
     int countTransactionByPatronId(@Param("patron_id") Long patronId);
 
+    // Query To Get List Transaction Which Not Return by Patron
     @Query(
             value = "select t.* " +
                     "from transactions t " +
@@ -27,6 +29,7 @@ public interface TransactionRepository extends JpaRepository<TransactionEntity, 
     )
     List<TransactionEntity> findTransactionByPatronIdAndBookId(@Param("patron_id") Long patronId, @Param("book_id") Long bookId);
 
+    // List All Transaction by A Patron
     @Query(
             value = "select * " +
                     "from transactions t " +
@@ -34,6 +37,8 @@ public interface TransactionRepository extends JpaRepository<TransactionEntity, 
             , nativeQuery = true
     )
     List<TransactionEntity> findTransactionByPatronId(@Param("patron_id") Long patronId);
+
+    //Query To Get List Transaction from One Book
     @Query(
             value = "select * " +
                     "from transactions t " +
