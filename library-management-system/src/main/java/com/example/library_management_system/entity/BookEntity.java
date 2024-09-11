@@ -4,8 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "patrons")
@@ -38,9 +42,9 @@ public class BookEntity {
 
     @Column(nullable = false)
     @JsonProperty("crated_at")
-    private Date createdAt;
+    private Timestamp createdAt;
 
     @Column(nullable = false)
     @JsonProperty("updated_at")
-    private Date updatedAt;
+    private Timestamp updatedAt;
 }
