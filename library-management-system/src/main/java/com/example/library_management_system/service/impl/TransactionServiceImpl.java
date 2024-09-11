@@ -7,12 +7,28 @@ import com.example.library_management_system.entity.TransactionEntity;
 import com.example.library_management_system.repository.BookRepository;
 import com.example.library_management_system.repository.PatronRepository;
 import com.example.library_management_system.repository.TransactionRepository;
+import com.example.library_management_system.dto.request.transaction.CreateBorrowReturnRequest;
+import com.example.library_management_system.entity.BookEntity;
+import com.example.library_management_system.entity.TransactionEntity;
+import com.example.library_management_system.repository.BookRepository;
+import com.example.library_management_system.repository.TransactionRepository;
 import com.example.library_management_system.service.TransactionService;
 import com.example.library_management_system.util.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import com.example.library_management_system.util.ApiResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -21,12 +37,59 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class TransactionServiceImpl implements TransactionService {
+    @Autowired
+    private TransactionRepository transactionRepository;
 
-    private PatronRepository patronRepository;
-
+    @Autowired
     private BookRepository bookRepository;
 
-    private TransactionRepository transactionRepository;
+    @Autowired
+    private PatronRepository patronRepository;
+
+    @Override
+    public ResponseEntity<ApiResponse<Object>> returnBook(CreateBorrowReturnRequest returnDetails) {
+        TransactionEntity transaction = transactionRepository.findTransactionByPatronIdAndBookId(returnDetails.getPatronId(), returnDetails.getBookId());
+
+        if (transaction != null) {
+            LocalDateTime now = LocalDateTime.now();
+            Date dueDate = transaction.getDueDate();
+
+            // Convert Date to Instant
+            Instant instant = dueDate.toInstant();
+
+            // Convert Instant to LocalDateTime
+            LocalDateTime localDateTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+            double fine = 0.0;
+
+            if (now.isAfter(localDateTime)) {
+                long overdueDays = ChronoUnit.DAYS.between(localDateTime, now);
+                fine = overdueDays * 0.50; // Example fine rate
+            }
+
+            LocalDateTime localDateTime2 = LocalDateTime.now();
+
+            // Extract the LocalDate part
+            LocalDate localDate = localDateTime.toLocalDate();
+
+            // Convert LocalDate to java.sql.Date
+            java.sql.Date sqlDate = java.sql.Date.valueOf(localDate);
+
+            transaction.setReturnedDate(sqlDate);
+            transaction.setFine(fine);
+
+            BookEntity book = transactionRepository.getBookById(returnDetails.getBookId());
+            book.setAvailableCopies(book.getAvailableCopies() + 1);
+            bookRepository.save(book);
+            transactionRepository.save(transaction);
+
+        } else {
+            ApiResponse<Object> response = new ApiResponse<>(null, "No books to return");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+
+        return null;
+    }
 
     @Override
     public ResponseEntity<ApiResponse<Object>> borrowBook(CreateBorrowReturnRequest borrowDetails) {
