@@ -25,7 +25,7 @@ public interface BookService {
     List<GetAllBookResponse> getAllAvailableBooks();
 
     //Search Books by Title or Author
-    ResponseEntity<ApiResponse<Object>> getBooksByKeyword(String keyword, Pageable pageable);
+    ResponseEntity<ApiResponse<Object>> getBooksByKeyword(String keyword);
 
     //Get Overdue Books
     List<GetOverdueBooks> getOverdueBooks();

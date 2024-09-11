@@ -3,7 +3,9 @@ package com.example.library_management_system.service.impl;
 import com.example.library_management_system.dto.request.book.CreateBookRequest;
 import com.example.library_management_system.dto.request.book.UpdateBookRequest;
 import com.example.library_management_system.dto.response.book.GetAllBookResponse;
+import com.example.library_management_system.dto.response.book.GetAvailableBookCopies;
 import com.example.library_management_system.dto.response.book.GetOverdueBooks;
+import com.example.library_management_system.dto.response.patron.GetBorrowingHistoryResponse;
 import com.example.library_management_system.entity.BookEntity;
 import com.example.library_management_system.entity.PatronEntity;
 import com.example.library_management_system.entity.TransactionEntity;
@@ -92,14 +94,18 @@ public class BookServiceImpl implements BookService {
 
     // Search Books by Title or Author
     @Override
-    public ResponseEntity<ApiResponse<Object>> getBooksByKeyword(String keyword, Pageable pageable) {
-        if (keyword == null) {
+    public ResponseEntity<ApiResponse<Object>> getBooksByKeyword(String keyword) {
+        if (keyword.isEmpty()) {
             ApiResponse<Object> response = new ApiResponse<>(null, "Keyword must be provided.");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
-        Page<GetAllBookResponse> searchedBooks = bookRepository.findByTitleOrAuthor(keyword, pageable);
-        ApiResponse<Object> response = new ApiResponse<>(null, "Keyword must be provided.");
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        List<BookEntity> searchedBooks = bookRepository.findByTitleOrAuthor(keyword);
+        List<GetAllBookResponse> getAllBookResponse = new ArrayList<>();
+        for(BookEntity b: searchedBooks){
+            getAllBookResponse.add(GetAllBookResponse.builder().id(b.getId()).title(b.getTitle()).author(b.getAuthor()).availableCopies(b.getAvailableCopies()).build());
+        }
+        ApiResponse<Object> response = new ApiResponse<>(getAllBookResponse, "");
+        return new ResponseEntity<>(response, HttpStatus.OK);
         }
 
     // Get Overdue Books
@@ -119,9 +125,13 @@ public class BookServiceImpl implements BookService {
     // Check Available Copies of Book
     @Override
     public ResponseEntity<ApiResponse<Object>> getAvailableBookCopiesById(Long bookId) {
-        Optional<BookEntity> book = bookRepository.findById(bookId);
+        BookEntity book = bookRepository.findById(bookId).orElse(null);
         if (book != null) {
-            ApiResponse<Object> response = new ApiResponse<>(book, "");
+            ApiResponse<Object> response = new ApiResponse<>(
+                    GetAvailableBookCopies.builder()
+                            .title(book.getTitle())
+                            .availableCopies(book.getAvailableCopies())
+                            .build(), "");
             return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
             ApiResponse<Object> response = new ApiResponse<>(null, "Book not found.");
@@ -132,8 +142,9 @@ public class BookServiceImpl implements BookService {
     // Delete Book By Id
     @Override
     public ResponseEntity<ApiResponse<Object>> deleteBook(Long bookId) {
-        Optional<BookEntity> book = bookRepository.findById(bookId);
+        BookEntity book = bookRepository.findById(bookId).orElse(null);
         if (book != null) {
+            bookRepository.delete(book);
             ApiResponse<Object> response = new ApiResponse<>(null, "Book deleted successfully.");
             return new ResponseEntity<>(response, HttpStatus.OK);
         } else {

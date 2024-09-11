@@ -41,8 +41,8 @@ public class BookController {
 
     // Search Books by Title or Author
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<Object>> getBooksByKeyword(@RequestParam (name = "keyword", required = true) String keyword, Pageable pageable) {
-        return bookService.getBooksByKeyword(keyword, pageable);
+    public ResponseEntity<ApiResponse<Object>> getBooksByKeyword(@RequestParam (name = "keyword", required = true) String keyword) {
+        return bookService.getBooksByKeyword(keyword);
         }
 
     // Get Overdue Books - Retrieve a list of overdue books and their patrons.

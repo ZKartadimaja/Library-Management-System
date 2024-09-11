@@ -124,16 +124,17 @@ public class PatronServiceImpl implements PatronService {
         if(patron != null) {
             List<TransactionEntity> transactions = patronRepository.findTransactionByPatronId(patronId);
             if (transactions == null){
+                patronRepository.delete(patron);
                 ApiResponse<Object> response = new ApiResponse<>(null, "Patron deleted successfully.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-            List<GetBorrowBookDetailsResponse> allBook = new ArrayList<>();
-            for(int i=0; i<transactions.size();i++){
-                if(transactions.get(i).getReturnedDate() == null){
+            for (TransactionEntity transaction : transactions) {
+                if (transaction.getReturnedDate() == null) {
                     ApiResponse<Object> response = new ApiResponse<>(null, "Cannot delete patron with active loans.");
                     return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
                 }
             }
+            patronRepository.delete(patron);
             ApiResponse<Object> response = new ApiResponse<>(null, "Patron deleted successfully.");
             return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
@@ -149,7 +150,7 @@ public class PatronServiceImpl implements PatronService {
             List<TransactionEntity> transactions = patronRepository.findTransactionByPatronId(patronId);
             List<GetCurrentBorrowedResponse> allBook = new ArrayList<>();
             for(int i=0; i<books.size();i++){
-                if(transactions.get(i).getReturnedDate() != null){
+                if(transactions.get(i).getReturnedDate() == null){
                     allBook.add(GetCurrentBorrowedResponse.builder().title(books.get(i).getTitle()).borrowedDate(transactions.get(i).getBorrowedDate()).dueDate(transactions.get(i).getDueDate()).build());
                 }
             }
