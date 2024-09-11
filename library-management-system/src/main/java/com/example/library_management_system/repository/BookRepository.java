@@ -70,4 +70,13 @@ public interface BookRepository extends JpaRepository<BookEntity, Long> {
     )
     List<PatronEntity> findPatronByOverdue();
 
+    //Query to check if ISBN exists in the 'books' table
+    @Query(
+            value = "select case when count(b) > 0 then true else false end " +
+                    "from books b " +
+                    "where b.isbn = :isbn",
+            nativeQuery = true
+    )
+    boolean existsByIsbn(@Param("isbn") String isbn);
+
 }
