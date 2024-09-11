@@ -1,15 +1,14 @@
 package com.example.library_management_system.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 @Entity
-@Table(name = "patrons")
+@Table(name = "books")
 @Setter
 @Getter
 public class BookEntity {
@@ -39,12 +38,9 @@ public class BookEntity {
 
     @Column(nullable = false)
     @JsonProperty("crated_at")
-    private Date createdAt;
+    private Timestamp createdAt;
 
-    @Column(nullable = false)
+    @Column()
     @JsonProperty("updated_at")
-    private Date updatedAt;
-
-
-
+    private Timestamp updatedAt;
 }

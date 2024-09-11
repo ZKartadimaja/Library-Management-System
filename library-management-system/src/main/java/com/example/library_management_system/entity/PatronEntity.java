@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "patrons")
@@ -20,7 +20,7 @@ public class PatronEntity {
     @JsonProperty("name")
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     @JsonProperty("email")
     private String email;
 
@@ -28,12 +28,12 @@ public class PatronEntity {
     @JsonProperty("membership_type")
     private String membershipType;
 
-    @Column(nullable = false)
+    @Column( nullable = false)
     @JsonProperty("crated_at")
-    private Date createdAt;
+    private Timestamp createdAt;
 
-    @Column(nullable = false)
+    @Column()
     @JsonProperty("updated_at")
-    private Date updatedAt;
+    private Timestamp updatedAt;
 
 }
