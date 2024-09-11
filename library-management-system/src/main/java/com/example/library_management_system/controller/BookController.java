@@ -15,45 +15,45 @@ public class BookController {
     private BookService bookService;
 
     // Add a New Book
-    @PostMapping
-    public ResponseEntity<ApiResponse<Object>> createBook(@RequestBody CreateBookRequest book) {
-        return bookService.saveBook(book);
-    }
-
-    // Update Book Details
-    @PutMapping("/{book_id}")
-    public ResponseEntity<ApiResponse<Object>> updateBook(@PathVariable(name = "book_id") Long bookId, @RequestBody UpdateBookRequest bookDetails) {
-        return bookService.updateBook(bookDetails);
-    }
-
-    // List All Available Books
-    @GetMapping()
-    public Page<ApiResponse<Object>> getAllAvailableBooks(Pageable pageable) {
-        return bookService.getAllAvailableBooks(pageable);
-    }
-
-    // Search Books by Title or Author
-    @GetMapping("/search")
-    public ResponseEntity<Page<ApiResponse<Object>>> getBooksByKeyword(@RequestParam (name = "keyword", required = true) String keyword, Pageable pageable) {
-        return bookService.getBooksByKeyword(keyword, pageable);
-    }
-
-    // Get Overdue Books - Retrieve a list of overdue books and their patrons.
-    @GetMapping("/overdue")
-    public ResponseEntity<Page<ApiResponse<Object>>> getOverdueBooks(Pageable pageable) {
-        return bookService.getOverdueBooks(pageable);
-    }
-
-    // Check Available Copies of a Book
-    @GetMapping("/{book_id}/availability")
-    public ResponseEntity<ApiResponse<Object>> getAvailableBookCopiesById(@PathVariable(name = "book_id") Long bookId) {
-        return bookService.getAvailableBookCopiesById(bookId);
-    }
-
-    // Delete a Book
-    @DeleteMapping("/{book_id}")
-    public ResponseEntity<ApiResponse<Object>> deleteBook (@PathVariable(name = "book_id") Long bookId) {
-        return bookService.deleteBook(bookId);
-    }
+//    @PostMapping
+//    public ResponseEntity<ApiResponse<Object>> createBook(@RequestBody CreateBookRequest book) {
+//        return bookService.saveBook(book);
+//    }
+//
+//    // Update Book Details
+//    @PutMapping("/{book_id}")
+//    public ResponseEntity<ApiResponse<Object>> updateBook(@PathVariable(name = "book_id") Long bookId, @RequestBody UpdateBookRequest bookDetails) {
+//        return bookService.updateBook(bookDetails);
+//    }
+//
+//    // List All Available Books
+//    @GetMapping()
+//    public Page<ApiResponse<Object>> getAllAvailableBooks(Pageable pageable) {
+//        return bookService.getAllAvailableBooks(pageable);
+//    }
+//
+//    // Search Books by Title or Author
+//    @GetMapping("/search")
+//    public ResponseEntity<Page<ApiResponse<Object>>> getBooksByKeyword(@RequestParam (name = "keyword", required = true) String keyword, Pageable pageable) {
+//        return bookService.getBooksByKeyword(keyword, pageable);
+//    }
+//
+//    // Get Overdue Books - Retrieve a list of overdue books and their patrons.
+//    @GetMapping("/overdue")
+//    public ResponseEntity<Page<ApiResponse<Object>>> getOverdueBooks(Pageable pageable) {
+//        return bookService.getOverdueBooks(pageable);
+//    }
+//
+//    // Check Available Copies of a Book
+//    @GetMapping("/{book_id}/availability")
+//    public ResponseEntity<ApiResponse<Object>> getAvailableBookCopiesById(@PathVariable(name = "book_id") Long bookId) {
+//        return bookService.getAvailableBookCopiesById(bookId);
+//    }
+//
+//    // Delete a Book
+//    @DeleteMapping("/{book_id}")
+//    public ResponseEntity<ApiResponse<Object>> deleteBook (@PathVariable(name = "book_id") Long bookId) {
+//        return bookService.deleteBook(bookId);
+//    }
 
 }

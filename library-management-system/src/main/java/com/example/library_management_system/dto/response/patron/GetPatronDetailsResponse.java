@@ -1,17 +1,16 @@
 package com.example.library_management_system.dto.response.patron;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Date;
+import java.util.List;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class GetPatronDetailsResponse {
 
     @JsonProperty("id")
@@ -27,6 +26,6 @@ public class GetPatronDetailsResponse {
     private String membershipType;
 
     @JsonProperty("borrowed_books")
-    private GetBorrowBookDetailsResponse borrowedBooks;
+    private List<GetBorrowBookDetailsResponse> borrowedBooks;
 
 }
