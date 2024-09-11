@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "patrons")
+@Table(name = "books")
 @Setter
 @Getter
 public class BookEntity {
@@ -44,7 +44,7 @@ public class BookEntity {
     @JsonProperty("crated_at")
     private Timestamp createdAt;
 
-    @Column(nullable = false)
+    @Column()
     @JsonProperty("updated_at")
     private Timestamp updatedAt;
 }

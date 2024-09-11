@@ -37,7 +37,7 @@ public class PatronEntity {
     @JsonProperty("crated_at")
     private Timestamp createdAt;
 
-    @Column(nullable = false)
+    @Column()
     @JsonProperty("updated_at")
     private Timestamp updatedAt;
 
