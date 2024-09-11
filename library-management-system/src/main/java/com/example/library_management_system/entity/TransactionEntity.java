@@ -17,13 +17,13 @@ public class TransactionEntity {
     private Long id;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer"})
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "patron_id", referencedColumnName = "id", nullable = false)
     @JsonProperty("patron")
     private PatronEntity patronId;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer"})
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "book_id", referencedColumnName = "id", nullable = false)
     @JsonProperty("book")
     private BookEntity bookId;
