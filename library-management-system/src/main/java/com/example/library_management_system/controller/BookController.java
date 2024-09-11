@@ -5,12 +5,9 @@ import com.example.library_management_system.entity.BookEntity;
 import com.example.library_management_system.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/books")
@@ -19,48 +16,46 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
-    // List All Available Books - Retrieve a list of all available books in the library.
+    // Add a New Book
+    @PostMapping
+    public ResponseEntity<ApiResponse> createBook(@RequestBody BookRequest book) {
+        return bookService.saveBook(book);
+    }
+
+    // Update Book Details
+    @PutMapping("/{book_id}")
+    public ResponseEntity<ApiResponse> updateBook(@PathVariable(name = "book_id") Long bookId, @RequestBody BookRequest bookDetails) {
+        return bookService.updateBook(bookDetails);
+    }
+
+    // List All Available Books
     @GetMapping()
-    public Page<BookResponse> getAllBooks(Pageable pageable) {
+    public Page<ApiResponse> getAllBooks(Pageable pageable) {
         return bookService.getAllBooks(pageable);
     }
 
-    // Search Books by Title or Author - Search for books by title or author.
+    // Search Books by Title or Author
     @GetMapping("/search")
-    public ResponseEntity<Page<BookResponse>> getBooksByKeyword(
-            @RequestParam (name = "keyword", required = true) String keyword,
-            Pageable pageable) {
-
-        Page<BookResponse> books = bookService.getBooksByKeyword(keyword, pageable);
-        if (books.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(books);
+    public ResponseEntity<Page<ApiResponse>> getBooksByKeyword(@RequestParam (name = "keyword", required = true) String keyword, Pageable pageable) {
+        return bookService.getBooksByKeyword(keyword, pageable);
     }
 
     // Get Overdue Books - Retrieve a list of overdue books and their patrons.
     @GetMapping("/overdue")
-    public ResponseEntity<Page<BookResponse>> getOverdueBooks(Pageable pageable) {
-        Page<BookResponse> overdueBooks = bookService.getOverdueBooks(pageable);
-        if (overdueBooks.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(overdueBooks);
+    public ResponseEntity<Page<ApiResponse>> getOverdueBooks(Pageable pageable) {
+        return bookService.getOverdueBooks(pageable);
     }
 
-    // Check Available Copies of a Book - Check how many copies of a book are available for borrowing.
+    // Check Available Copies of a Book
     @GetMapping("/{book_id}/availability")
-    public ResponseEntity<BookResponse> getAvailableBookCopiesById(
-            @PathVariable Long id
-    ){
-        BookResponse book = bookService.getAvailableBookCopiesById(id);
-        if (book != null) {
-            return ResponseEntity.ok(book);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<ApiResponse> getAvailableBookCopiesById(@PathVariable(name = "book_id") Long bookId) {
+        return bookService.getAvailableBookCopiesById(bookId);
     }
 
-    
+    // Delete a Book
+    @DeleteMapping("/{book_id}")
+    public ResponseEntity<ApiResponse> deleteBook (@PathVariable(name = "book_id") Long bookId) {
+        return bookService.deleteBook(bookId);
+    }
 
 }
