@@ -9,13 +9,17 @@ import com.example.library_management_system.repository.PatronRepository;
 import com.example.library_management_system.repository.TransactionRepository;
 import com.example.library_management_system.service.TransactionService;
 import com.example.library_management_system.util.ApiResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Optional;
 
+@Service
+@Slf4j
 public class TransactionServiceImpl implements TransactionService {
 
     private PatronRepository patronRepository;
