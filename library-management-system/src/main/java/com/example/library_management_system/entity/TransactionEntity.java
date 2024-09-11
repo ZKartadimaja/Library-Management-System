@@ -36,7 +36,7 @@ public class TransactionEntity {
     @JsonProperty("due_date")
     private Date dueDate;
 
-    @Column(nullable = false)
+    @Column()
     @JsonProperty("returned_date")
     private Date returnedDate;
 

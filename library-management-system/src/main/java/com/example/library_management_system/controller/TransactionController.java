@@ -20,31 +20,16 @@ public class TransactionController {
     private TransactionService transactionService;
 
     // Borrow A Book
-//    @PostMapping
-//    @RequestMapping("/api/borrow")
-//    public ResponseEntity<ApiResponse<Object>> borrowBook(@RequestBody CreateBorrowReturnRequest borrowDetails) {
-//        return transactionService.borrowBook(borrowDetails);
-////        GetBorrowTransactionResponse borrowTransaction = transactionService.saveBorrowTransaction(borrowDetails);
-////        if (borrowTransaction != null) {
-////            ApiResponse<Object> response = new ApiResponse<>(borrowTransaction, "Book borrowed successfully");
-////            return new ResponseEntity<>(response, HttpStatus.OK);
-////        } else {
-////            ApiResponse<Object> response = new ApiResponse<>(null, "Cannot borrow. Either the book is unavailable or the patron has reached their limit.");
-////            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-//        }
-//
-//    // Return A Book
-//    @PostMapping
-//    @RequestMapping("/api/return")
-//    public ResponseEntity<ApiResponse<Object>> returnBook(@RequestBody CreateBorrowReturnRequest returnDetails) {
-//        return transactionService.returnBook(returnDetails);
-////        GetReturnTransactionResponse returnTransaction = transactionService.saveBorrowTransaction(returnDetails);
-////        if (returnTransaction != null) {
-////            ApiResponse<Object> response = new ApiResponse<>(returnTransaction, "Book returned successfully");
-////            return new ResponseEntity<>(response, HttpStatus.OK);
-////        } else {
-////            ApiResponse<Object> response = new ApiResponse<>(null, "Cannot borrow. Either the book is unavailable or the patron has reached their limit.");
-////            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-////        }
-//    }
+    @PostMapping
+    @RequestMapping("/api/borrow")
+    public ResponseEntity<ApiResponse<Object>> borrowBook(@RequestBody CreateBorrowReturnRequest borrowDetails) {
+        return transactionService.borrowBook(borrowDetails);
+    }
+
+    // Return A Book
+    @PostMapping
+    @RequestMapping("/api/return")
+    public ResponseEntity<ApiResponse<Object>> returnBook(@RequestBody CreateBorrowReturnRequest returnDetails) {
+        return transactionService.returnBook(returnDetails);
+    }
 }

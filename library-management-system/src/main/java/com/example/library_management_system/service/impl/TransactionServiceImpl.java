@@ -7,31 +7,20 @@ import com.example.library_management_system.entity.TransactionEntity;
 import com.example.library_management_system.repository.BookRepository;
 import com.example.library_management_system.repository.PatronRepository;
 import com.example.library_management_system.repository.TransactionRepository;
-import com.example.library_management_system.dto.request.transaction.CreateBorrowReturnRequest;
-import com.example.library_management_system.entity.BookEntity;
-import com.example.library_management_system.entity.TransactionEntity;
-import com.example.library_management_system.repository.BookRepository;
-import com.example.library_management_system.repository.TransactionRepository;
 import com.example.library_management_system.service.TransactionService;
 import com.example.library_management_system.util.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import com.example.library_management_system.util.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
+import java.sql.Date;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -54,11 +43,13 @@ public class TransactionServiceImpl implements TransactionService {
             LocalDateTime now = LocalDateTime.now();
             Date dueDate = transaction.getDueDate();
 
-            // Convert Date to Instant
-            Instant instant = dueDate.toInstant();
-
-            // Convert Instant to LocalDateTime
-            LocalDateTime localDateTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
+            LocalDate localDate = dueDate.toLocalDate();
+            LocalDateTime localDateTime = localDate.atStartOfDay();
+//            // Convert Date to Instant
+//            Instant instant = dueDate.toInstant();
+//
+//            // Convert Instant to LocalDateTime
+//            LocalDateTime localDateTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
 
             double fine = 0.0;
 
@@ -70,10 +61,10 @@ public class TransactionServiceImpl implements TransactionService {
             LocalDateTime localDateTime2 = LocalDateTime.now();
 
             // Extract the LocalDate part
-            LocalDate localDate = localDateTime.toLocalDate();
+            LocalDate localDate2 = localDateTime.toLocalDate();
 
             // Convert LocalDate to java.sql.Date
-            java.sql.Date sqlDate = java.sql.Date.valueOf(localDate);
+            java.sql.Date sqlDate = java.sql.Date.valueOf(localDate2);
 
             transaction.setReturnedDate(sqlDate);
             transaction.setFine(fine);
@@ -114,8 +105,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         //Check patron borrowing limit based on membership type and available copies of the book
         int borrowingLimit = patron.getMembershipType().equals("Premium") ? 10 : 5;
-        long borrowedCount = transactionRepository.countByPatronIdAndReturnDateIsNull(patronId);
-
+        int borrowedCount = transactionRepository.countTransactionByPatronId(patronId);
         if (borrowedCount >= borrowingLimit || book.getAvailableCopies() <= 0) {
             ApiResponse<Object> response = new ApiResponse<>(null, "Cannot borrow. Either the book is unavailable or the patron has reached their limit.");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -125,8 +115,9 @@ public class TransactionServiceImpl implements TransactionService {
         TransactionEntity transaction = new TransactionEntity();
         transaction.setPatronId(patron);
         transaction.setBookId(book);
-        transaction.setBorrowedDate(Date.valueOf(LocalDate.now()));
-        transaction.setDueDate(Date.valueOf(LocalDate.now().plusWeeks(1)));
+        transaction.setBorrowedDate(java.sql.Date.valueOf(LocalDate.now()));
+        transaction.setDueDate(java.sql.Date.valueOf(LocalDate.now().plusWeeks(1)));
+        transaction.setFine(0.0);
 
         //Update available copies of the book
         book.setAvailableCopies(book.getAvailableCopies() - 1);

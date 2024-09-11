@@ -11,24 +11,28 @@ import java.util.List;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<TransactionEntity, Long> {
-<<<<<<< Updated upstream
-    long countByPatronIdAndReturnDateIsNull(Long patronId);
-=======
+
+    @Query(
+            value = "select count(t) " +
+                    "from transactions t " +
+                    "where t.returned_date is null and t.patron_id = :patron_id",
+            nativeQuery = true
+    )
+    int countTransactionByPatronId(@Param("patron_id") Long patronId);
+
     @Query(
             value = "select t.* " +
-                    "from transaction t " +
-                    "where t.patron_id = :patronId and t.book_id = bookId"
+                    "from transactions t " +
+                    "where t.patron_id = :patron_id and t.book_id = :book_id"
             , nativeQuery = true
     )
     TransactionEntity findTransactionByPatronIdAndBookId(@Param("patron_id") Long patronId, @Param("book_id") Long bookId);
 
     @Query(
-            value = "select b.* " +
+            value = "select b " +
                     "from books b " +
-                    "join transactions t on t.book_id = b.id " +
-                    "where b.id = :bookId",
+                    "where b.id = :book_id",
             nativeQuery = true
     )
     BookEntity getBookById(@Param("book_id") Long bookId);
->>>>>>> Stashed changes
 }
