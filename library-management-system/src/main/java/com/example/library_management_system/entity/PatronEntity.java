@@ -20,7 +20,7 @@ public class PatronEntity {
     @JsonProperty("name")
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     @JsonProperty("email")
     private String email;
 
