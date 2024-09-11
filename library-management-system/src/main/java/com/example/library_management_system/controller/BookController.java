@@ -35,8 +35,8 @@ public class BookController {
 
     // List All Available Books
     @GetMapping()
-    public List<GetAllBookResponse> getAllAvailableBooks() {
-        return bookService.getAllAvailableBooks();
+    public Page<GetAllBookResponse> getAllAvailableBooks(Pageable pageable) {
+        return bookService.getAllAvailableBooks(pageable);
     }
 
     // Search Books by Title or Author

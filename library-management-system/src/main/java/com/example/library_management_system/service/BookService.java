@@ -5,6 +5,8 @@ import com.example.library_management_system.dto.request.book.UpdateBookRequest;
 import com.example.library_management_system.dto.response.book.GetAllBookResponse;
 import com.example.library_management_system.dto.response.book.GetOverdueBooks;
 import com.example.library_management_system.util.ApiResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +22,7 @@ public interface BookService {
     ResponseEntity<ApiResponse<Object>> updateBook(Long bookId, UpdateBookRequest bookDetails);
 
     //Get All Available Books
-    List<GetAllBookResponse> getAllAvailableBooks();
+    Page<GetAllBookResponse> getAllAvailableBooks(Pageable pageable);
 
     //Search Books by Title or Author
     ResponseEntity<ApiResponse<Object>> getBooksByKeyword(String keyword);

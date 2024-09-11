@@ -34,7 +34,7 @@ public interface BookRepository extends JpaRepository<BookEntity, Long> {
                     "where b.available_copies >= 0",
             nativeQuery = true
     )
-    List<BookEntity> findAvailableCopies();
+    Page<BookEntity> findAvailableCopies(Pageable pageable);
 
 
     //Get Overdue Books

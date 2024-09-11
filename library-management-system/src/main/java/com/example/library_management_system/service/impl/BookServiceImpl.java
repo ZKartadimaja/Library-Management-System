@@ -14,6 +14,9 @@ import com.example.library_management_system.service.BookService;
 import com.example.library_management_system.util.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,8 +28,6 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.regex.Matcher;
 
 @Service
 @Slf4j
@@ -86,13 +87,19 @@ public class BookServiceImpl implements BookService {
 
     // Get All Available Books
     @Override
-    public List<GetAllBookResponse> getAllAvailableBooks() {
-        List<BookEntity> books = bookRepository.findAvailableCopies();
-        List<GetAllBookResponse> getAllBookResponse = new ArrayList<>();
-        for(BookEntity b: books){
-            getAllBookResponse.add(GetAllBookResponse.builder().id(b.getId()).title(b.getTitle()).author(b.getAuthor()).availableCopies(b.getAvailableCopies()).build());
-        }
-        return getAllBookResponse;
+    public Page<GetAllBookResponse> getAllAvailableBooks(Pageable pageable) {
+        Page<BookEntity> books = bookRepository.findAvailableCopies(pageable);
+
+        List<GetAllBookResponse> getAllBookResponses = books.stream()
+                .map(b -> GetAllBookResponse.builder()
+                        .id(b.getId())
+                        .title(b.getTitle())
+                        .author(b.getAuthor())
+                        .availableCopies(b.getAvailableCopies())
+                        .build())
+                .toList();
+
+        return new PageImpl<>(getAllBookResponses, pageable, books.getTotalElements());
     }
 
     // Search Books by Title or Author
