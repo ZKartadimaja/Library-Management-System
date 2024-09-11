@@ -12,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/books")
 public class BookController {
@@ -33,8 +35,8 @@ public class BookController {
 
     // List All Available Books
     @GetMapping()
-    public Page<GetAllBookResponse> getAllAvailableBooks(Pageable pageable) {
-        return bookService.getAllAvailableBooks(pageable);
+    public List<GetAllBookResponse> getAllAvailableBooks() {
+        return bookService.getAllAvailableBooks();
     }
 
     // Search Books by Title or Author
@@ -45,8 +47,8 @@ public class BookController {
 
     // Get Overdue Books - Retrieve a list of overdue books and their patrons.
     @GetMapping("/overdue")
-    public Page<GetOverdueBooks> getOverdueBooks(Pageable pageable) {
-        return bookService.getOverdueBooks(pageable);
+    public List<GetOverdueBooks> getOverdueBooks() {
+        return bookService.getOverdueBooks();
         }
 
     // Check Available Copies of a Book

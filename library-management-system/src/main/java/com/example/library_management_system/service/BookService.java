@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public interface BookService {
 
@@ -20,13 +22,13 @@ public interface BookService {
     ResponseEntity<ApiResponse<Object>> updateBook(Long bookId, UpdateBookRequest bookDetails);
 
     //Get All Available Books
-    Page<GetAllBookResponse> getAllAvailableBooks(Pageable pageable);
+    List<GetAllBookResponse> getAllAvailableBooks();
 
     //Search Books by Title or Author
     ResponseEntity<ApiResponse<Object>> getBooksByKeyword(String keyword, Pageable pageable);
 
     //Get Overdue Books
-    Page<GetOverdueBooks> getOverdueBooks(Pageable pageable);
+    List<GetOverdueBooks> getOverdueBooks();
 
     //Check Available Copies of Book
     ResponseEntity<ApiResponse<Object>> getAvailableBookCopiesById(Long bookId);

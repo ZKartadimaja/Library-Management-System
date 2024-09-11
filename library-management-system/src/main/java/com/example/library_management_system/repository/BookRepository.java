@@ -3,12 +3,16 @@ package com.example.library_management_system.repository;
 import com.example.library_management_system.dto.response.book.GetAllBookResponse;
 import com.example.library_management_system.dto.response.book.GetOverdueBooks;
 import com.example.library_management_system.entity.BookEntity;
+import com.example.library_management_system.entity.PatronEntity;
+import com.example.library_management_system.entity.TransactionEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface BookRepository extends JpaRepository<BookEntity, Long> {
@@ -32,15 +36,38 @@ public interface BookRepository extends JpaRepository<BookEntity, Long> {
                     "where b.available_copies >= 0",
             nativeQuery = true
     )
-    Page<GetAllBookResponse> findAvailableCopies(Pageable pageable);
+    List<BookEntity> findAvailableCopies();
+
 
     //Get Overdue Books
     @Query(
-            value = "select * " +
+            value = "select b.* " +
                     "from transactions t " +
+                    "join books b on b.id = t.book_id " +
+                    "join patrons p on p.id = t.patron_id" +
                     "where due_date -  borrowed date > 0",
             nativeQuery = true
     )
-    Page<GetOverdueBooks> findOverdueBooks(Pageable pageable);
+    List<BookEntity> findBookByOverdue();
+
+    @Query(
+            value = "select t.* " +
+                    "from transactions t " +
+                    "join books b on b.id = t.book_id " +
+                    "join patrons p on p.id = t.patron_id" +
+                    "where due_date -  borrowed date > 0",
+            nativeQuery = true
+    )
+    List<TransactionEntity> findTransactionByOverdue();
+
+    @Query(
+            value = "select p.* " +
+                    "from transactions t " +
+                    "join books b on b.id = t.book_id " +
+                    "join patrons p on p.id = t.patron_id" +
+                    "where due_date -  borrowed date > 0",
+            nativeQuery = true
+    )
+    List<PatronEntity> findPatronByOverdue();
 
 }

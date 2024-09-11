@@ -30,9 +30,13 @@ public class PatronServiceImpl implements PatronService {
     private PatronRepository patronRepository;
 
     public ResponseEntity<ApiResponse<Object>> savePatron(CreatePatronRequest patron){
+        if(patron.getName() == null || patron.getEmail() == null || patron.getMembershipType() == null){
+            ApiResponse<Object> response = new ApiResponse<>(null, "Patron not found.");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
         Pattern pattern = Pattern.compile("^.+@.+\\..+$");
         Matcher matcher = pattern.matcher(patron.getEmail());
-        if(patron.getName() == null || patron.getEmail() == null || patron.getMembershipType() == null || !matcher.matches() || (!patron.getMembershipType().equals("regular") && !patron.getMembershipType().equals("premium"))) {
+        if(!matcher.matches() || (!patron.getMembershipType().equals("regular") && !patron.getMembershipType().equals("premium"))) {
             ApiResponse<Object> response = new ApiResponse<>(null, "Patron not found.");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
@@ -55,10 +59,14 @@ public class PatronServiceImpl implements PatronService {
     }
 
     public ResponseEntity<ApiResponse<Object>> updatePatron(Long patronId, CreatePatronRequest patron){
+        if(patron.getName() == null || patron.getEmail() == null){
+            ApiResponse<Object> response = new ApiResponse<>(null, "Patron not found.");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
         PatronEntity checkPatron = patronRepository.findById(patronId).orElse(null);
         Pattern pattern = Pattern.compile("^.+@.+\\..+$");
         Matcher matcher = pattern.matcher(patron.getEmail());
-        if(checkPatron == null || patron.getName() == null || patron.getEmail() == null || patron.getMembershipType() == null || !matcher.matches() || (!patron.getMembershipType().equals("regular") && !patron.getMembershipType().equals("premium"))) {
+        if(checkPatron == null || patron.getMembershipType() == null || !matcher.matches() || (!patron.getMembershipType().equals("regular") && !patron.getMembershipType().equals("premium"))) {
             ApiResponse<Object> response = new ApiResponse<>(null, "Patron not found.");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }

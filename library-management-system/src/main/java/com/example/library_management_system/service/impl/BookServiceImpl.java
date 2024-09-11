@@ -5,6 +5,8 @@ import com.example.library_management_system.dto.request.book.UpdateBookRequest;
 import com.example.library_management_system.dto.response.book.GetAllBookResponse;
 import com.example.library_management_system.dto.response.book.GetOverdueBooks;
 import com.example.library_management_system.entity.BookEntity;
+import com.example.library_management_system.entity.PatronEntity;
+import com.example.library_management_system.entity.TransactionEntity;
 import com.example.library_management_system.repository.BookRepository;
 import com.example.library_management_system.service.BookService;
 import com.example.library_management_system.util.ApiResponse;
@@ -16,6 +18,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -39,6 +49,7 @@ public class BookServiceImpl implements BookService {
         newBook.setIsbn(bookDetails.getIsbn());
         newBook.setQuantity(bookDetails.getQuantity());
         newBook.setAvailableCopies(bookDetails.getQuantity());
+        newBook.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
 
         BookEntity savedBook = bookRepository.save(newBook);
 
@@ -70,8 +81,13 @@ public class BookServiceImpl implements BookService {
 
     // Get All Available Books
     @Override
-    public Page<GetAllBookResponse> getAllAvailableBooks(Pageable pageable) {
-        return bookRepository.findAvailableCopies(pageable);
+    public List<GetAllBookResponse> getAllAvailableBooks() {
+        List<BookEntity> books = bookRepository.findAvailableCopies();
+        List<GetAllBookResponse> getAllBookResponse = new ArrayList<>();
+        for(BookEntity b: books){
+            getAllBookResponse.add(GetAllBookResponse.builder().id(b.getId()).title(b.getTitle()).author(b.getAuthor()).availableCopies(b.getAvailableCopies()).build());
+        }
+        return getAllBookResponse;
     }
 
     // Search Books by Title or Author
@@ -88,8 +104,16 @@ public class BookServiceImpl implements BookService {
 
     // Get Overdue Books
     @Override
-    public Page<GetOverdueBooks> getOverdueBooks(Pageable pageable) {
-        return bookRepository.findOverdueBooks(pageable);
+    public List<GetOverdueBooks> getOverdueBooks() {
+        List<BookEntity> book = bookRepository.findBookByOverdue();
+        List<TransactionEntity> transaction = bookRepository.findTransactionByOverdue();
+        List<PatronEntity> patron = bookRepository.findPatronByOverdue();
+        List<GetOverdueBooks> getOverdueBookResponse = new ArrayList<>();
+        for(int i=0; i<transaction.size(); i++){
+            Long dayOverdue = ChronoUnit.DAYS.between((Temporal) transaction.get(i).getDueDate(), LocalDate.now());
+            getOverdueBookResponse.add(GetOverdueBooks.builder().bookTitle(book.get(i).getTitle()).patronName(patron.get(i).getName()).dueDate(transaction.get(i).getDueDate()).daysOverdue(dayOverdue).build());
+        }
+        return getOverdueBookResponse;
     }
 
     // Check Available Copies of Book
