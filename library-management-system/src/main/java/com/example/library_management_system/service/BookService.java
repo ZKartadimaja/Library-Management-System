@@ -5,8 +5,6 @@ import com.example.library_management_system.dto.request.book.UpdateBookRequest;
 import com.example.library_management_system.dto.response.book.GetAllBookResponse;
 import com.example.library_management_system.dto.response.book.GetOverdueBooks;
 import com.example.library_management_system.util.ApiResponse;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 

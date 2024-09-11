@@ -1,11 +1,6 @@
 package com.example.library_management_system.service;
 
 import com.example.library_management_system.dto.request.patron.CreatePatronRequest;
-import com.example.library_management_system.dto.response.patron.CreateResponsePatron;
-import com.example.library_management_system.dto.response.patron.GetBorrowingHistoryResponse;
-import com.example.library_management_system.dto.response.patron.GetCurrentBorrowedResponse;
-import com.example.library_management_system.dto.response.patron.GetPatronDetailsResponse;
-import com.example.library_management_system.entity.PatronEntity;
 import com.example.library_management_system.util.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
