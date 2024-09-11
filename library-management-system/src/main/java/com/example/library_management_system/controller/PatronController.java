@@ -2,6 +2,7 @@ package com.example.library_management_system.controller;
 
 import com.example.library_management_system.entity.PatronEntity;
 import com.example.library_management_system.service.PatronService;
+import com.example.library_management_system.util.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,66 +17,78 @@ public class PatronController {
 
     //  Register a new patron with name, email, and membership type.
     @PostMapping
-    public ResponseEntity<PatronResponse> createPatron(@RequestBody PatronRequest patronDetails) {
+    public ResponseEntity<ApiResponse<Object>> createPatron(@RequestBody PatronRequest patronDetails) {
         PatronResponse patron = patronService.savePatron(patronDetails);
         if (patron != null) {
-            return ResponseEntity.ok(patron);
+            ApiResponse<Object> response = new ApiResponse<>(patron, "");
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
-            return ResponseEntity.notFound().build();
+            ApiResponse<Object> response = new ApiResponse<>(null, "Patron not found.");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
 
     //  Update the patron’s name, email, or membership type.
     @PutMapping("/{patron_id}")
-    public ResponseEntity<PatronResponse> updatePatron(@PathVariable(name = "patron_id") Long patronId, @RequestBody PatronRequest patronDetails) {
+    public ResponseEntity<ApiResponse<Object>> updatePatron(@PathVariable(name = "patron_id") Long patronId, @RequestBody PatronRequest patronDetails) {
         PatronResponse patron = patronService.updatePatron(patronId, patronDetails);
         if (patron != null) {
-            return ResponseEntity.ok(patron);
+            ApiResponse<Object> response = new ApiResponse<>(null, "Patron details updated successfully.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
-            return ResponseEntity.notFound().build();
+            ApiResponse<Object> response = new ApiResponse<>(null, "Patron not found.");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
 
     //  Retrieve the borrowing history of a patron.
     @GetMapping("/{patron_id}/borrow_history")
-    public ResponseEntity<PatronResponse> getPatronHistoryById(@PathVariable(name = "patron_id") Long patronId) {
+    public ResponseEntity<ApiResponse<Object>> getPatronHistoryById(@PathVariable(name = "patron_id") Long patronId) {
         PatronResponse patron = patronService.getPatronHistoryById(patronId);
         if (patron != null) {
-            return ResponseEntity.ok(patron);
+            ApiResponse<Object> response = new ApiResponse<>(patron, "");
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
-            return ResponseEntity.notFound().build();
+            ApiResponse<Object> response = new ApiResponse<>(null, "There is no borrowed history");
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
     }
 
     //  Retrieve details of a specific patron, including current borrowed books.
     @GetMapping("/{patron_id}")
-    public ResponseEntity<PatronResponse> getPatronsById(@PathVariable(name = "patron_id") Long patronId) {
+    public ResponseEntity<ApiResponse<Object>> getPatronsById(@PathVariable(name = "patron_id") Long patronId) {
         PatronResponse patron = patronService.getPatronsById(patronId);
         if (patron != null) {
-            return ResponseEntity.ok(patron);
+            ApiResponse<Object> response = new ApiResponse<>(patron, "");
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
-            return ResponseEntity.notFound().build();
+            ApiResponse<Object> response = new ApiResponse<>(null, "There is no patron");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
 
     //  Deletes a patron from the system.
     @DeleteMapping("/{patron_id}")
-    public ResponseEntity<PatronResponse> deletePatron(@PathVariable(name = "patron_id") Long patronId){
+    public ResponseEntity<ApiResponse<Object>> deletePatron(@PathVariable(name = "patron_id") Long patronId){
         PatronResponse patron = patronService.deletePatron(patronId);
         if (patron != null) {
-            return ResponseEntity.ok(patron);
+            ApiResponse<Object> response = new ApiResponse<>(null, "Patron deleted successfully.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
-            return ResponseEntity.notFound().build();
+            ApiResponse<Object> response = new ApiResponse<>(null, "Cannot delete patron with active loans.");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
     //  Retrieve the list of books currently borrowed by a patron.
     @GetMapping("/{patron_id}/current_borrowings")
-    public ResponseEntity<PatronResponse> getPatronCurrentBorrowingsById(@PathVariable(name = "patron_id") Long patronId) {
+    public ResponseEntity<ApiResponse<Object>> getPatronCurrentBorrowingsById(@PathVariable(name = "patron_id") Long patronId) {
         PatronResponse patron = patronService.getPatronCurrentBorrowingsById(patronId);
         if (patron != null) {
-            return ResponseEntity.ok(patron);
+            ApiResponse<Object> response = new ApiResponse<>(patron, "");
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
-            return ResponseEntity.notFound().build();
+            ApiResponse<Object> response = new ApiResponse<>(null, "There is no current borrow book.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
     }
 }
