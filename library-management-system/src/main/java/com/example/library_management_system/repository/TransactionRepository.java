@@ -1,4 +1,9 @@
 package com.example.library_management_system.repository;
 
-public interface TransactionRepository {
+import com.example.library_management_system.entity.TransactionEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface TransactionRepository extends JpaRepository<TransactionEntity, Long> {
 }
