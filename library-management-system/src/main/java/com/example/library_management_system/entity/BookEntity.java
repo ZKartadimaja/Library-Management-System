@@ -1,6 +1,5 @@
 package com.example.library_management_system.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -44,7 +43,4 @@ public class BookEntity {
     @Column(nullable = false)
     @JsonProperty("updated_at")
     private Date updatedAt;
-
-
-
 }
