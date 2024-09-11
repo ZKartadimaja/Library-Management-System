@@ -9,6 +9,7 @@ import com.example.library_management_system.entity.BookEntity;
 import com.example.library_management_system.entity.PatronEntity;
 import com.example.library_management_system.entity.TransactionEntity;
 import com.example.library_management_system.repository.BookRepository;
+import com.example.library_management_system.repository.TransactionRepository;
 import com.example.library_management_system.service.BookService;
 import com.example.library_management_system.util.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,9 @@ public class BookServiceImpl implements BookService {
 
     @Autowired
     private BookRepository bookRepository;
+
+    @Autowired
+    private TransactionRepository transactionRepository;
 
     // Add a New Book
     @Override
@@ -139,6 +143,19 @@ public class BookServiceImpl implements BookService {
     public ResponseEntity<ApiResponse<Object>> deleteBook(Long bookId) {
         BookEntity book = bookRepository.findById(bookId).orElse(null);
         if (book != null) {
+            List<TransactionEntity> transactions = transactionRepository.findTransactionByBookId(bookId);
+            if (transactions.isEmpty()){
+                bookRepository.delete(book);
+                ApiResponse<Object> response = new ApiResponse<>(null, "Patron deleted successfully.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            for (TransactionEntity transaction : transactions) {
+                if (transaction.getReturnedDate() == null) {
+                    ApiResponse<Object> response = new ApiResponse<>(null, "Cannot delete patron with active loans.");
+                    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+                }
+            }
+            transactionRepository.deleteAll(transactions);
             bookRepository.delete(book);
             ApiResponse<Object> response = new ApiResponse<>(null, "Book deleted successfully.");
             return new ResponseEntity<>(response, HttpStatus.OK);

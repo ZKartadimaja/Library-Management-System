@@ -126,7 +126,7 @@ public class PatronServiceImpl implements PatronService {
         PatronEntity patron = patronRepository.findById(patronId).orElse(null);
         if(patron != null) {
             List<TransactionEntity> transactions = transactionRepository.findTransactionByPatronId(patronId);
-            if (transactions == null){
+            if (transactions.isEmpty()){
                 patronRepository.delete(patron);
                 ApiResponse<Object> response = new ApiResponse<>(null, "Patron deleted successfully.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
@@ -137,6 +137,7 @@ public class PatronServiceImpl implements PatronService {
                     return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
                 }
             }
+            transactionRepository.deleteAll(transactions);
             patronRepository.delete(patron);
             ApiResponse<Object> response = new ApiResponse<>(null, "Patron deleted successfully.");
             return new ResponseEntity<>(response, HttpStatus.OK);
