@@ -1,5 +1,13 @@
 package com.example.library_management_system.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.sql.Date;
+
+@Entity
 @Table(name = "patrons")
 @Setter
 @Getter
@@ -21,11 +29,11 @@ public class PatronEntity {
     private String membershipType;
 
     @Column(nullable = false)
-    @JsopProperty("crated_at")
+    @JsonProperty("crated_at")
     private Date createdAt;
 
-    @Column(nullavle = false)
-    @JsonProperty('updated_at')
+    @Column(nullable = false)
+    @JsonProperty("updated_at")
     private Date updatedAt;
 
 }
