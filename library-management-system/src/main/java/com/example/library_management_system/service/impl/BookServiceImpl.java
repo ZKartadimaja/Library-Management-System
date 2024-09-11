@@ -68,7 +68,7 @@ public class BookServiceImpl implements BookService {
     public ResponseEntity<ApiResponse<Object>> updateBook(Long bookId, UpdateBookRequest bookDetails) {
         BookEntity book = bookRepository.findById(bookId)
                 .orElse(null);
-        if (bookDetails.getTitle() == null || bookDetails.getAuthor() == null || bookDetails.getQuantity() <= 0) {
+        if (book == null || bookDetails.getTitle() == null || bookDetails.getAuthor() == null || bookDetails.getQuantity() <= 0) {
             ApiResponse<Object> response = new ApiResponse<>(null, "Invalid input. Ensure all fields are filled.");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
